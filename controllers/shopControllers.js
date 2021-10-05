@@ -29,14 +29,11 @@ const getShopById = asyncHandler(async (req, res) => {
 // @access  Public
 
 const deleteShop = asyncHandler(async (req, res) => {
-    const shop = await Shop.findById(req.params.id);
-  
-    if (shop) {
-      await Shop.remove();
-      res.json({ message: "Shop Removed  Successfully" });
-    } else {
-      res.status(404);
-      throw new Error("Shop Not Found");
+    try {
+      await Shop.findByIdAndRemove(req.params.id);
+      res.send("Deleted Successfully")
+    } catch (error) {
+      res.status(404).json({message: "Something Went Wrong"})
     }
 });
 
