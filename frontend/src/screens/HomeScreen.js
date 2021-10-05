@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Shop from '../components/Shop'
@@ -7,24 +7,18 @@ import Message from "../components/Message";
 import { useHistory } from "react-router-dom";
 import {
   listShops,
-  deleteShop,
   createShop,
 } from "../actions/shopActions";
-import { SHOP_CREATE_RESET } from "../constants/shopConstants";
 
 const ProductListScreen = ({ match }) => {
+  const [area, setArea] = useState();
+  const [category, setCategory] = useState(); 
   const dispatch = useDispatch();
   const history = useHistory();
 
   const shopList = useSelector((state) => state.shopList);
   const { loading, error, shops } = shopList;
 
-  const shopDelete = useSelector((state) => state.shopDelete);
-  const {
-    loading: loadingDelete,
-    error: errorDelete,
-    success: successDelete,
-  } = shopDelete;
 
   const shopCreate = useSelector((state) => state.shopCreate);
   const {
@@ -34,16 +28,11 @@ const ProductListScreen = ({ match }) => {
     shop: createdShop,
   } = shopCreate;
 
-  const deleteHandler = (id) => {
-    dispatch(deleteShop(id));
-  };
-
   const createShopHandler = () => {
     dispatch(createShop());
   };
 
   useEffect(() => {
-    dispatch({ type: SHOP_CREATE_RESET });
     if (successCreate) {
       history.push(`/shop/${createdShop._id}/edit`);
     } else {
@@ -52,7 +41,6 @@ const ProductListScreen = ({ match }) => {
   }, [
     dispatch,
     history,
-    successDelete,
     successCreate,
     createdShop,
   ]);
@@ -65,8 +53,40 @@ const ProductListScreen = ({ match }) => {
         </Col>
         <Col className="text-right">
           <Button className="my-3" onClick={createShopHandler}>
-            <i className="fas fa-plus"></i> Create Shop
+            Create Shop
           </Button>
+        </Col>
+        <Col>
+        <div className="form-row">
+              <div className="form-group col-md-6">
+                <label>Area:</label>
+                  <select className="form-control" name="area" onChange={(e) => setArea(e.target.value)}>
+                      <option defaultValue></option>
+                      <option value="Nashik">Nashik</option>
+                      <option value="Thane">Thane</option>
+                      <option value="Mumbai Suburban">Mumbai Suburban</option>
+                      <option value="Solanpur">Solanpur</option>
+                      <option value="AhmedNagar">AhmedNagar</option>
+                      <option value="Pune">Pune</option>
+                  </select>
+              </div>
+            </div>
+        </Col>
+        <Col>
+        <div className="form-row">
+              <div className="form-group col-md-6">
+                <label>category:</label>
+                  <select className="form-control" name="category" onChange={(e) => setCategory(e.target.value)}>
+                      <option defaultValue></option>
+                      <option value="Grocery">Grocery</option>
+                      <option value="Butcher">Butcher</option>
+                      <option value="Baker">Baker</option>
+                      <option value="Chemist">Chemist</option>
+                      <option value="Stationary Shop">Stationary Shop</option>
+                      <option value="Pune">Pune</option>
+                  </select>
+              </div>
+            </div>
         </Col>
       </Row>
       {loadingCreate && <Loader />}
@@ -75,6 +95,18 @@ const ProductListScreen = ({ match }) => {
         <Loader />
       ) : error ? (
         <Message variant="danger">{error}</Message>
+      ) : area ? (
+        shops.filter(shop => shop.area === area).map(filteredShop => (
+          <Col key={filteredShop._id} sm={12} md={6} lg={4} xl={3}>
+          <Shop shop={filteredShop} />
+        </Col>
+        ))
+      ) : category ? (
+        shops.filter(shop => shop.category === category).map(filteredShop => (
+          <Col key={filteredShop._id} sm={12} md={6} lg={4} xl={3}>
+          <Shop shop={filteredShop} />
+        </Col>
+        ))
       ) : (
         <Row>
           {shops.map((shop) => (

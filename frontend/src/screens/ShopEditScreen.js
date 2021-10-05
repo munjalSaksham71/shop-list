@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
@@ -44,12 +44,9 @@ const ShopEditScreen = ({ match, history }) => {
         setClosingDate(shop.closingDate);
       }
     }
-  }, [shop, dispatch, shopId, successUpdate, history]);
+  }, [history, shop, dispatch, shopId, successUpdate]);
 
-
-
-  const submitHandler = (e) => {
-    e.preventDefault();
+  const submitHandler = () => {
     dispatch(
       updateShop({
         _id: shopId,
@@ -82,6 +79,7 @@ const ShopEditScreen = ({ match, history }) => {
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="name"
+                required
                 placeholder="Enter name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -91,8 +89,8 @@ const ShopEditScreen = ({ match, history }) => {
             <div className="form-row">
               <div className="form-group col-md-6">
                 <label>Area:</label>
-                  <select className="form-control" name="area" onChange={(e) => setArea(e.target.value)}>
-                      <option selected>Select City</option>
+                  <select required className="form-control" name="area" onChange={(e) => setArea(e.target.value)}>
+                      <option defaultValue>Select City</option>
                       <option value="Nashik">Nashik</option>
                       <option value="Thane">Thane</option>
                       <option value="Mumbai Suburban">Mumbai Suburban</option>
@@ -106,8 +104,8 @@ const ShopEditScreen = ({ match, history }) => {
             <div className="form-row">
               <div className="form-group col-md-6">
                 <label>Area:</label>
-                  <select className="form-control" name="category" onChange={(e) => setCategory(e.target.value)}>
-                      <option selected>Select Category</option>
+                  <select required className="form-control" name="category" onChange={(e) => setCategory(e.target.value)}>
+                      <option defaultValue>Select Category</option>
                       <option value="butcher">Butcher</option>
                       <option value="Grocery">Grocery</option>
                       <option value="Baker">Baker</option>
@@ -120,6 +118,7 @@ const ShopEditScreen = ({ match, history }) => {
             <Form.Group controlId="openingDate">
               <Form.Label>Opening Date</Form.Label>
               <Form.Control
+                required
                 type="date"
                 placeholder="Enter Opening Date"
                 value={openingDate}
@@ -130,6 +129,7 @@ const ShopEditScreen = ({ match, history }) => {
             <Form.Group controlId="closingDate">
               <Form.Label>Closing Date</Form.Label>
               <Form.Control
+                required
                 type="date"
                 placeholder="Enter Closing Date"
                 value={closingDate}
